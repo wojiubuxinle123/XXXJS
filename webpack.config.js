@@ -5,7 +5,6 @@ module.exports = {
     entry: './src/xxxjs.js',
     output: {
         filename: 'xxxjs.js',
-        path: "C:\\xampp\\htdocs\\thinkphp\\public\\xxxjs\\"
-        // path: "C:\\xampp\\htdocs\\nyenv\\Public\\plugins\\xxxjs\\"
+        path: "./dist/"
     }
 };

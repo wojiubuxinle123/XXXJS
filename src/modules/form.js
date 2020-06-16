@@ -16,7 +16,7 @@ Form.prototype.configDefault = {
         },
         verifyRule: {
             require: /\S+/,
-            phone: /^1\d{10}$/,
+            phone: /^1[3456789]\d{10}$/,
             // email: //,
         },
         verifyBind: {},

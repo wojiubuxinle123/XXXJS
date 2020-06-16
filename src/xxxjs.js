@@ -2,7 +2,7 @@
 import Form from "./modules/form.js";
 import Upload from "./modules/upload.js";
 import Table from "./modules/table.js";
-import Varify from "./modules/varify.js";
+import Verify from "./modules/verify.js";
 import Template from "handlebars";
 // import Carousel from "./modules/carousel.js";
 
@@ -12,9 +12,9 @@ XXXJS.Form = Form;
 XXXJS.Upload = Upload;
 XXXJS.Table = Table;
 XXXJS.Template = Template;
-XXXJS.Varify = Varify;
+XXXJS.Verify = Verify;
 
-XXXJS.varify = new Varify();
+XXXJS.verify = new Verify();
 
 XXXJS.each = function (data, callback) {
     if (typeof data == "object") {
@@ -25,9 +25,10 @@ XXXJS.each = function (data, callback) {
         for (var each of data) {
             callback(each)
         }
-    } else if (typeof data == "string") {
+    } else {
         callback(data);
     }
+    return true;
 }
 
 XXXJS.template = function (tpl, data) {
