@@ -8,7 +8,7 @@ var Verify = function (configCustom) {
 Verify.prototype.configDefault = {
     verifyRule: {
         require: /\S+/,
-        phone: /^1[34578]\d{10}$/,
+        phone: /^1[34578]\d{9}$/,
         date: /^(?:\d{4}-\d{2}-\d{2})$/,
         datetime: /^(?:\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2})$/,
         num: /^(?:\d+)$/
@@ -30,9 +30,18 @@ Verify.prototype.verify = function (data, callback) {
     var that = this;
     var verifyRule = that.config.verifyRule;
     var verifyBind = that.config.verifyBind;
-    if (typeof data != "object") return "不是object";
-    for (var index in data) {
-        var eachData = data[index];
+    var initData = {};
+
+    if (typeof data != "object") { return "不是object"; } else { initData = data; }
+
+    if (data instanceof FormData) {
+        for (var value of data) {
+            initData[value[0]] = value[1];
+        }
+    }
+
+    for (var index in initData) {
+        var eachData = initData[index];
         if (index in verifyBind) {
             // verifyBind[index] = typeof verifyBind[index] == "array" ? verifyBind[index] : [verifyBind[index]];
             for (var eachBind of verifyBind[index]) {

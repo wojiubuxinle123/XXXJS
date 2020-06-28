@@ -42,12 +42,7 @@ Upload.prototype.render = function () {
     var ajaxConfig = that.config.ajaxConfig;
 
     // 初始化元素
-    var eventElem = renderConfig.eventElem;
-    if (typeof eventElem == "string") {
-        eventElem = /^#.+/.test(eventElem) ? eventElem : "#" + eventElem;
-        console.log(eventElem);
-        renderConfig.eventElem = $(eventElem);
-    }
+    renderConfig.eventElem = XXXJS.transToJQ(renderConfig.eventElem);
 
     // 初始化 multipleType(多文件模式) 值，renderConfig.multiple 为 true 时，其一定为 true
     gnConfig.multipleType = renderConfig.multiple ? true : gnConfig.multipleType;
@@ -70,7 +65,7 @@ Upload.prototype.render = function () {
         display: "none"
     });
     // renderConfig.appendElem.append(inputElem);
-    renderConfig.inputElem.off("change").on("change", function () {
+    inputElem.off("change").on("change", function () {
         var dateNow = Date.now();
         that.filesList = that.filesList && gnConfig.multipleType ? that.filesList : {};
         for (var i = 0; i < this.files.length; i++) {
@@ -89,6 +84,7 @@ Upload.prototype.render = function () {
         renderConfig.inputElem[0].click();
     });
     renderConfig.eventElem.after(inputElem);
+    
     renderConfig.inputElem = inputElem;
 };
 

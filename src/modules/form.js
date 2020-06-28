@@ -6,6 +6,8 @@ var Form = function (configCustom) {
 
     // 初始化 config
     that.config = $.extend(true, {}, that.configDefault, configCustom);
+    that.verify = new XXXJS.Verify(configCustom.verifyConfig);
+    that.render();
 }
 
 Form.prototype.configDefault = {
@@ -13,13 +15,7 @@ Form.prototype.configDefault = {
         autoVerify: false,
         beforeSubmit: function () {
             return true;
-        },
-        verifyRule: {
-            require: /\S+/,
-            phone: /^1[3456789]\d{10}$/,
-            // email: //,
-        },
-        verifyBind: {},
+        }
     },
     ajaxConfig: {
         url: "",
@@ -32,7 +28,8 @@ Form.prototype.configDefault = {
         fail: function () { }
     },
     renderConfig: {
-        formElem: "xxxjs-form"
+        formElem: "xxxjs-form",
+        submitElem: "xxxjs-form-submit"
     }
 }
 
@@ -43,7 +40,11 @@ Form.prototype.render = function () {
 
     // 赋值 formElem
     renderConfig.formElem = XXXJS.transToJQ(renderConfig.formElem);
+    renderConfig.submitElem = XXXJS.transToJQ(renderConfig.submitElem);
 
+    renderConfig.submitElem.on("click", function () {
+        that.submit();
+    });
     // 初始化 formData
     that.formData = new FormData();
 }
@@ -55,23 +56,27 @@ Form.prototype.setVerifyRule = function (rule) {
 
 Form.prototype.getFormData = function () {
     var that = this;
-    var formData = new FormData(that.elem[0]);
+    var renderConfig = that.config.renderConfig;
+    var ajaxConfig = that.config.ajaxConfig;
+    var formData = new FormData(renderConfig.formElem[0]);
 
-    for (var item in that.config.ajaxConfig.data) {
-        formData.append(item, that.config.ajaxConfig.data[item]);
+    for (var item in ajaxConfig.data) {
+        formData.append(item, ajaxConfig.data[item]);
     }
     that.formData = formData;
     return formData;
 }
 
 Form.prototype.submit = function () {
-    var that = this
-        , ajaxConfig = that.config.ajaxConfig
-        , gnConfig = that.config.gnConfig;
+    var that = this;
+    var ajaxConfig = that.config.ajaxConfig;
+    var gnConfig = that.config.gnConfig;
+    var verifyConfig = that.config.verifyConfig;
+
     // 获取 FormData
     that.getFormData();
-    if (gnConfig.autoVerify) {
-        if (!that.validate()) return false;
+    if (gnConfig.autoVerify && !that.verify.verify(that.formData, verifyConfig.gnCallback)) {
+        return false;
     }
     if (gnConfig.beforeSubmit()) {
         ajaxConfig.data = that.formData;

@@ -8,11 +8,11 @@ import Template from "handlebars";
 
 window.XXXJS = {};
 
-XXXJS.Form = Form;
-XXXJS.Upload = Upload;
-XXXJS.Table = Table;
 XXXJS.Template = Template;
 XXXJS.Verify = Verify;
+XXXJS.Upload = Upload;
+XXXJS.Table = Table;
+XXXJS.Form = Form;
 
 XXXJS.verify = new Verify();
 
@@ -47,12 +47,21 @@ XXXJS.unionFormData = function () {
 }
 
 XXXJS.transToJQ = function (elem) {
+    //     elem = /^#.+/.test(elem) ? elem : "#" + elem;
+    if (typeof elem == "object") {
+        if (elem instanceof jQuery) {
+            return elem;
+        } else {
+            return $(elem);
+        }
+    }
+    
     if (typeof elem == "string") {
-        elem = /^#.+/.test(elem) ? elem : "#" + elem;
-        return $(elem);
-    } else if (typeof elem == "object" && !elem instanceof jQuery) {
-        return $(elem);
-    } else if (typeof elem == "object" && elem instanceof jQuery) {
-        return elem;
+        if ($(elem).length > 0) {
+            return $(elem);
+        } else {
+            elem = "#" + elem;
+            return $(elem);
+        }
     }
 }
