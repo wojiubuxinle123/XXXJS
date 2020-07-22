@@ -3,12 +3,12 @@ import Form from "./modules/form.js";
 import Upload from "./modules/upload.js";
 import Table from "./modules/table.js";
 import Verify from "./modules/verify.js";
-import Template from "handlebars";
+// import Template from "handlebars";
 // import Carousel from "./modules/carousel.js";
 
 window.XXXJS = {};
 
-XXXJS.Template = Template;
+// XXXJS.Template = Template;
 XXXJS.Verify = Verify;
 XXXJS.Upload = Upload;
 XXXJS.Table = Table;
@@ -31,10 +31,10 @@ XXXJS.each = function (data, callback) {
     return true;
 }
 
-XXXJS.template = function (tpl, data) {
-    var str = Template.compile(tpl);
-    return str(data);
-}
+// XXXJS.template = function (tpl, data) {
+//     var str = Template.compile(tpl);
+//     return str(data);
+// }
 
 XXXJS.unionFormData = function () {
     var formData = new FormData();

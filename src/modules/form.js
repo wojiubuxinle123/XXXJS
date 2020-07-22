@@ -75,7 +75,7 @@ Form.prototype.submit = function () {
 
     // 获取 FormData
     that.getFormData();
-    if (gnConfig.autoVerify && !that.verify.verify(that.formData, verifyConfig.gnCallback)) {
+    if (gnConfig.autoVerify && !that.validate()) {
         return false;
     }
     if (gnConfig.beforeSubmit()) {
@@ -89,24 +89,9 @@ Form.prototype.submit = function () {
 }
 
 Form.prototype.validate = function () {
-    var that = this
-        , verifyBind = that.config.gnConfig.verifyBind
-        , verifyRule = that.config.gnConfig.verifyRule;
-    that.setFormData();
-
-    for (var item in verifyBind) {
-        if (that.formData.has(item)) {
-            var val = that.formData.get(item);
-            for (var eitem in verifyBind[item]) {
-                if (!verifyRule[eitem].test(val)) {
-                    alert(verifyBind[item][eitem]);
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
+    var that = this;
+    that.getFormData();
+    return that.verify.verify(that.formData);
 }
 
 export default Form;

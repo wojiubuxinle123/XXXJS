@@ -13,7 +13,8 @@ Verify.prototype.configDefault = {
         datetime: /^(?:\d{4}-\d{2}-\d{2}\s{1}\d{2}:\d{2}:\d{2})$/,
         num: /^(?:\d+)$/
     },
-    verifyBind: {}
+    verifyBind: {},
+    callback: function () { }
 }
 
 Verify.prototype.setVerifyRule = function (rule) {
@@ -26,13 +27,14 @@ Verify.prototype.setVerifyBind = function (bind) {
     $.extend(that.config.verifyBind, bind);
 }
 
-Verify.prototype.verify = function (data, callback) {
+Verify.prototype.verify = function (data, CustomConfig = {}) {
     var that = this;
-    var verifyRule = that.config.verifyRule;
-    var verifyBind = that.config.verifyBind;
+    var verifyConfig = $.extend(true, {}, that.config, CustomConfig);
+    var verifyRule = verifyConfig.verifyRule;
+    var verifyBind = verifyConfig.verifyBind;
     var initData = {};
 
-    if (typeof data != "object") { return "不是object"; } else { initData = data; }
+    if (typeof data != "object") { return "不是object"; } else { initData = $.extend({}, data) }
 
     if (data instanceof FormData) {
         for (var value of data) {
@@ -43,19 +45,17 @@ Verify.prototype.verify = function (data, callback) {
     for (var index in initData) {
         var eachData = initData[index];
         if (index in verifyBind) {
-            // verifyBind[index] = typeof verifyBind[index] == "array" ? verifyBind[index] : [verifyBind[index]];
+            verifyBind[index] = !verifyBind[index] instanceof Array ? [verifyBind[index]] : verifyBind[index];
             for (var eachBind of verifyBind[index]) {
                 var eachRule = eachBind.rule;
-                if (eachRule in verifyRule) {
-                    if (!verifyRule[eachRule].test(eachData)) {
-                        if ('wrong' in eachBind && typeof eachBind.wrong == "function") {
-                            eachBind.wrong();
-                            return false;
-                        } else {
-                            callback(eachBind.msg);
-                            return false;
-                        }
-                    }
+                var result = true; // 为false时为验证不通过，
+                var callback = typeof eachBind.wrong == "function" ? function (msg, data) { eachBind.wrong() } : verifyConfig.callback;
+                result = typeof eachRule == "string" && eachRule in verifyRule && !verifyRule[eachRule].test(eachData) ? false : result;
+                result = eachRule instanceof RegExp && !eachRule.test(eachData) ? false : result;
+                result = typeof eachRule == "function" && !eachRule(eachData, initData) ? false : result;
+                if (!result) {
+                    callback(eachBind.msg, { index: index, value: eachData, data: initData });
+                    return false;
                 }
             }
         }
