@@ -17,9 +17,9 @@ Upload.prototype.configDefault = {
     gnConfig: {
         autoUpload: false, //选择文件后是否自动上传
         multipleType: false, //多文件模式，一次性向后台传多个文件，当renderConfig.multiple为true时为true
-        autoVerify: true,
+        autoVerify: false,
         proview: null,
-        filedName: "file", //代替input name属性，render方法生成的input不具有name属性，renderConfig.inputElem的name属性可能产生未知后果
+        fieldName: "file", //代替input name属性，render方法生成的input不具有name属性，renderConfig.inputElem的name属性可能产生未知后果
         onChange: function () { },
         eachChange: function () { },
         beforeUpload: function () { return true; }

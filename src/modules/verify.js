@@ -49,7 +49,7 @@ Verify.prototype.verify = function (data, CustomConfig = {}) {
             for (var eachBind of verifyBind[index]) {
                 var eachRule = eachBind.rule;
                 var result = true; // 为false时为验证不通过，
-                var callback = typeof eachBind.wrong == "function" ? function (msg, data) { eachBind.wrong() } : verifyConfig.callback;
+                var callback = typeof eachBind.wrong == "function" ? eachBind.wrong : verifyConfig.callback;
                 result = typeof eachRule == "string" && eachRule in verifyRule && !verifyRule[eachRule].test(eachData) ? false : result;
                 result = eachRule instanceof RegExp && !eachRule.test(eachData) ? false : result;
                 result = typeof eachRule == "function" && !eachRule(eachData, initData) ? false : result;
